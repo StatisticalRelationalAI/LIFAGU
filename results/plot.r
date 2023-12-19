@@ -4,6 +4,8 @@ library(patchwork)
 library(stringr)
 library(tikzDevice)
 
+use_tikz = FALSE
+
 results = read.csv(file = "results-prepared.csv", sep=",", dec=".")
 stats = read.csv(file = "_stats-prepared.csv", sep=",", dec=".")
 
@@ -11,7 +13,11 @@ stats["engine"][stats["engine"] == "fove.LiftedVarElim"] = "Lifted Variable Elim
 stats["engine"][stats["engine"] == "ve.VarElimEngine"] = "Variable Elimination"
 stats = rename(stats, "Algorithm" = "engine")
 
-tikz('plot-eval.tex', standAlone = FALSE, height = 2.5)
+if (use_tikz) {
+  tikz('plot-eval.tex', standAlone = FALSE, height = 2.5)
+} else {
+  pdf('plot-eval.pdf', height = 2.5)
+}
 
 p1 <- ggplot(results, aes(x=d, y=mean_kl_div)) +
   geom_line(col=rgb(140,69,152, maxColorValue=255)) +
